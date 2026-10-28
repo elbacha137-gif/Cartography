@@ -610,13 +610,13 @@
       <div class="panel-badge">Fiche Métier</div>
       <h2 class="panel-title" id="p-title"></h2>
 
-      <div class="rubric">Définition Conceptuelle</div>
-      <p class="def-text" id="p-def"></p>
+      <div class="rubric" id="rubric-def">Définition Conceptuelle</div>
+      <div class="def-text" id="p-def"></div>
 
-      <div class="rubric">Périmètre d'Action — Missions</div>
+      <div class="rubric" id="rubric-missions">Périmètre d'Action — Missions</div>
       <ul class="missions" id="p-missions"></ul>
 
-      <div class="rubric">Référence Bibliographique</div>
+      <div class="rubric" id="rubric-citation">Référence Bibliographique</div>
       <div class="citation-box" id="p-citation"></div>
     </div>
   </div>
@@ -629,7 +629,7 @@
     <div class="team-member">Asmae Ayni</div>
     <div class="team-member">Fouad Akaarire</div>
     <div class="team-member">Hafsa Khattabi</div>
-    <div class="team-member">Oissal El Filalli</div>
+    <div class="team-member">Ouissal El Filalli</div>
     <div class="team-member">Lina Teffahi</div>
   </div>
 
@@ -686,13 +686,11 @@
       romanNum: "IV",
       photo: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=900&q=80",
       caption: "Médiation Relationnelle & Animation Communautaire",
-      definition: "Acteur de la médiation relationnelle directe, le Community Manager stimule et régule les dynamiques interactionnelles unissant une organisation à ses collectifs numériques. Il préserve le contrat fiduciaro-communicationnel en mobilisant des compétences d'empathie discursive, d'écoute active et de gestion de crise.",
-      missions: [
-        "Instaurer des rituels conversationnels visant à consolider le sentiment d'appartenance et l'attachement symbolique à la communauté.",
-        "Appliquer des protocoles de médiation et de résolution des controverses pour neutraliser les risques de déflagration réputationnelle.",
-        "Convertir les retours d'expérience qualitatifs des usagers en préconisations pour les équipes de conception et de service."
-      ],
-      citation: "Fournier, S., & Avery, J. (2011). The uninvited brand. <em>Business Horizons</em>, 54(3), 193–207. https://doi.org/10.1016/j.bushor.2011.01.001"
+      rawText: [
+        "Le Community Manager est le garant de la relation directe entre la marque et ses publics sur les plateformes numériques.",
+        "Son rôle principal consiste à animer et fédérer une communauté active autour de valeurs partagées, tout en veillant à la réputation en ligne de l'organisation. Au quotidien, il gère les interactions (commentaires, messages), modère les échanges pour prévenir les conflits, et analyse les avis des utilisateurs.",
+        "Véritable relais d'information, il capte les besoins du terrain pour enrichir la stratégie de l'équipe de communication."
+      ]
     },
     {
       titre: "Chef de Projet Digital",
@@ -927,15 +925,33 @@
     pCaption.textContent = d.caption;
     pIndex.textContent   = d.romanNum;
     pTitle.textContent   = d.titre;
-    pDef.textContent     = d.definition;
 
-    pMissions.innerHTML = '';
-    d.missions.forEach(m => {
-      const li = document.createElement('li');
-      li.textContent = m;
-      pMissions.appendChild(li);
-    });
-    pCitation.innerHTML = '<p>' + d.citation + '</p>';
+    const rDef = document.getElementById('rubric-def');
+    const rMissions = document.getElementById('rubric-missions');
+    const rCitation = document.getElementById('rubric-citation');
+
+    if (d.rawText) {
+      if (rDef) rDef.style.display = 'none';
+      if (rMissions) rMissions.style.display = 'none';
+      if (pMissions) pMissions.style.display = 'none';
+      if (rCitation) rCitation.style.display = 'none';
+      if (pCitation) pCitation.style.display = 'none';
+      pDef.innerHTML = d.rawText.map(para => `<p style="margin-bottom: 16px; font-size: 14px; line-height: 1.85;">${para}</p>`).join('');
+    } else {
+      if (rDef) rDef.style.display = '';
+      if (rMissions) rMissions.style.display = '';
+      if (pMissions) pMissions.style.display = '';
+      if (rCitation) rCitation.style.display = '';
+      if (pCitation) pCitation.style.display = '';
+      pDef.textContent = d.definition;
+      pMissions.innerHTML = '';
+      (d.missions || []).forEach(m => {
+        const li = document.createElement('li');
+        li.textContent = m;
+        pMissions.appendChild(li);
+      });
+      pCitation.innerHTML = d.citation ? '<p>' + d.citation + '</p>' : '';
+    }
 
     nodes.forEach((n, i) => n.classList.toggle('active', i === idx));
 
